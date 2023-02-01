@@ -1,116 +1,87 @@
 <template>
-  <div>
-    <h2>To do: ({{todos.length}})</h2>
-    <input
-      type="text"
-      placeholder="Type something and press ENTER"
-      @keypress.enter="addTodo"
-      v-model="inputTodo"
-    />
+  <div class="container">
+
+    <h2>To do: ({{ todos.length }})</h2>
+    <input type="text" placeholder="Type something and press ENTER" @keypress.enter="addTodo" v-model="inputTodo" />
 
     <ol>
-      <draggable
-        class="dragArea list-group"
-        :list="todos"
-        :clone="clone"
-        :group="{ name: 'people', pull: pullFunction }"
-        @start="start"
-      >
-        <li v-for="(item, index) in todos" :key="item.text">
-          <label>
-            <input type="checkbox" />
-            <span @click="complete(item, index)">{{ item.text }}</span>
-            <a href="#" class="remove" @click="remove(item.id)">Remove</a>
-          </label>
-        </li>
-      </draggable>
+      <TodoList :todos="todos" @toggle="complete" @remove="remove" />
     </ol>
 
     <hr />
-    <h2>Completed items: ({{completed.length}})</h2>
+
+    <h2>Completed items: ({{ completed.length }})</h2>
+
     <ol>
-      <draggable
-        class="dragArea list-group"
-        :list="completed"
-        :clone="clone"
-        :group="{ name: 'people', pull: pullFunction }"
-        @start="start"
-      >
-        <li v-for="(item, index) in completed" :key="item.text+item.id">
-          <label>
-            <input checked type="checkbox" />
-            <span @click="uncomplete(item, index)">{{ item.text }}</span>
-            <a href="#" class="remove" @click="remove(item.id)">Remove</a>
-          </label>
-        </li>
-      </draggable>
+      <TodoList :completed="true" :todos="completed" @toggle="uncomplete" @remove="remove" />
     </ol>
+
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable";
-
+import TodoList from './TodoList.vue'
 export default {
   name: 'HelloWorld',
-   components: {
-    draggable
+  components: {
+    TodoList
   },
- data() {
-   return{
-     inputTodo: '',
+  data() {
+    return {
+      inputTodo: '',
       todos: [
-      {id: 1, text: "Learn about Vue" },
-      {id: 2, text: "Learn about Fliplet" },
-      {id: 3, text: "Play around in JSFiddle" },
-      {id: 4, text: "Show us what you've got" }
-    ],
-     completed: [],
-     controlOnStart: true
-   }
+        { id: 1, text: "Learn about Vue" },
+        { id: 2, text: "Learn about Fliplet" },
+        { id: 3, text: "Play around in JSFiddle" },
+        { id: 4, text: "Show us what you've got" }
+      ],
+      completed: [],
+      controlOnStart: true
+    }
   },
   methods: {
-    addTodo(){
-      if(this.inputTodo.trim())
-      this.todos.unshift({text: this.inputTodo.trim(), id: new Date().getTime()})
+    addTodo() {
+      if (this.inputTodo.trim())
+        this.todos.unshift({ text: this.inputTodo.trim(), id: new Date().getTime() })
       this.inputTodo = ''
     },
-    remove(id) {
-      const index = this.list.findIndex(el=>el.id===id)
-      this.list.splice(index, 1)
+    remove(id, completed) {
+      if (completed) {
+        const index = this.completed.findIndex(el => el.id === id)
+        this.completed.splice(index, 1)
+      }
+      else {
+        const index = this.todos.findIndex(el => el.id === id)
+        this.todos.splice(index, 1)
+      }
     },
-      pullFunction() {
-      return this.controlOnStart ? "clone" : true;
-    },
-    start({ originalEvent }) {
-      this.controlOnStart = originalEvent.ctrlKey;
-    },
-       clone(obj) {
-      return { ...obj, id: new Date().getTime() };
-    },
-    complete(item, index){
+    complete(item, index) {
       this.completed.push({ ...item, id: new Date().getTime() })
       this.todos.splice(index, 1)
 
-},
-     uncomplete(item, index){
+    },
+    uncomplete(item, index) {
       this.todos.push({ ...item, id: new Date().getTime() })
       this.completed.splice(index, 1)
 
-}
-
-
+    }
 
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 body {
   background: #20262e;
   padding: 20px;
   font-family: Helvetica;
+
+}
+
+.container {
+  max-width: 991px;
+  margin: 0 auto;
 }
 
 #app {
@@ -122,6 +93,8 @@ body {
 
 li {
   margin: 8px 0;
+  cursor: grab;
+
 }
 
 h2 {
@@ -137,6 +110,10 @@ input[type="text"] {
   padding: 10px;
   width: 200px;
 }
+input[type="checkbox"]{
+  cursor: pointer;
+}
+
 label {
   display: block;
 }
