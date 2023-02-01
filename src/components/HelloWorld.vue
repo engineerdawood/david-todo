@@ -1,7 +1,7 @@
 <template>
   <div class="container">
 
-    <h2>To do: ({{ todos.length }})</h2>
+    <h2>To Do: ({{ todos.length }})</h2>
     <input type="text" placeholder="Type something and press ENTER" @keypress.enter="addTodo" v-model="inputTodo" />
 
     <ol>
@@ -10,7 +10,7 @@
 
     <hr />
 
-    <h2>Completed items: ({{ completed.length }})</h2>
+    <h2>Completed Items: ({{ completed.length }})</h2>
 
     <ol>
       <TodoList :completed="true" :todos="completed" @toggle="uncomplete" @remove="remove" />
@@ -108,7 +108,7 @@ del {
 
 input[type="text"] {
   padding: 10px;
-  width: 200px;
+  width: 215px;
 }
 input[type="checkbox"]{
   cursor: pointer;

@@ -5,7 +5,7 @@
             <label>
                 <input :checked="completed" @change="toggle(item, index)" type="checkbox" />
                 <span @click="toggle(item, index)">{{ item.text }}</span>
-                <a href="#" class="remove" @click="remove(item.id)">Remove</a>
+                <a href="#" class="remove" @click="remove(item.id)">remove</a>
             </label>
         </li>
     </draggable>
